@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>バーコードリーダー</title>
+    <link rel="stylesheet" href="https://localhost:7255/css/scanner.css" />
+</head>
+<body>
+    <!-- ライブラリ読み込み　改善の余地あり -->
+    <script src="https://localhost:7255/js/quagga.min.js"></script>
+    <!-- 表示領域はcss -->
+    <div id="photo-area" class="viewport"></div>
+
+    <script>
+        // バーコードリーダーイニシャル
+        Quagga.init({
+            locate: true,
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                constraints: {
+                    width: 640,
+                    height: 480,
+                    facingMode: "environment", //environment or user
+                },
+                target: document.querySelector('#photo-area'),
+            },
+            area: {
+                top: "0%",    // top offset
+                right: "0%",  // right offset
+                left: "0%",   // left offset
+                bottom: "0%"  // bottom offset
+            },
+            decoder: {
+                readers: ["ean_reader", "ean_8_reader"],
+                multiple: false
+            },
+            locator: {
+                halfSample: false,
+                patchSize: "medium"
+            }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            //バーコードをスキャンできた際のイベント
+            Quagga.onDetected((data) => {
+                alert(data.codeResult.code)
+                var aa = data.codeResult.code;
+                document.getElementById("result").value += aa + "\n";
+                read()
+            });
+
+            Quagga.start();
+        });
+
+        function read() {
+            document.getElementById("result").value = aa;
+        }
+    </script>
+    <textarea cols="0" rows="4" id="result"></textarea>
+</body>
+</html>
